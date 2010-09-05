@@ -31,41 +31,134 @@ $(function(){
     go2(idx);
 
     function toggleOutline(b){
-        var o=$("#outline"), c=$("#content");
+        var o=$("#outline"), c=$("#content"),x=$("#btn-outline-hider");
         b = b==undefined?(parseInt(o.css("left"))!=0):b;
         if(b){
             o.css({"left":"0"});
             c.css({"margin-left":210})
+            x.text("<")
         }else{
             o.css({"left":"-200px"});
             c.css({"margin-left":0})
+            x.text(">")
         }
     }
     $("#btn-outline-hider").click(function(){toggleOutline();});
     $("#btn-backword").click(function(){go(-1);})
     $("#btn-foreword").click(function(){go(1);})
 
-    $().keydown(function(evt){
-        //if(window.console && window.console.log){window.console.log(evt.keyCode);}
+    var searchDir = 1; // forward(1), backward(0).
+    var searchResults = [];
+    function doSearch(key){
+        var re = new RegExp('('+key+')', key==key.toLowerCase()?"ig":"g");
+        $('cite.search').each(function(){
+            $(this).replaceWith($(this).text());
+        });
+        searchResults = [];
+        $("#content>div.slide").each(function(i){
+            $("*",this).each(function(){
+                if(!$(this).children().length){
+                    $(this).html($(this).text().replace(re,'<cite class="search">$1</cite>'));
+                    searchResults.push(i);
+                }
+            });
+        });
+    }
+    function prevSearchResult(){
+        if(!searchResults.length){return;}
+        if(searchDir){
+            for(var i=0,l=searchResults.length; i<l; i++){
+                //if(CURR_PAGE>)
+            }
+        }else{
+            for(var i=searchResults.length; i>0; i--){
+                //if(CURR_PAGE>)
+            }
+        }
+    }
+    function nextSearchResult(){}
+    function forwardSearch(){
+        $("#forward-search").show();
+        $("#forward-search>input").focus();
+    }
+    function doForwardSearch(key){
+        doSearch(key);
+        hideForwardSearch();
+    }
+    function hideForwardSearch(){
+        $(window).focus();
+        $("#forward-search").hide();
+        $("#forward-search>input").val("");
+    }
+    $("#forward-search>input").keydown(function(evt){
         switch(evt.keyCode){
         case 10:
         case 13: // <Enter>
-            go2(parseInt(location.hash.replace("#","")));
+            doForwardSearch($(this).val());
+            break;
+        case 27: // Esc
+            hideForwardSearch();
+            break;
+        default:
+            break;
+        }
+        evt.stopPropagation();
+    }).blur(hideForwardSearch);
+
+    function backwardSearch(){
+        $("#backward-search").show();
+        $("#backward-search>input").focus();
+    }
+    function doBackwardSearch(key){
+        doSearch(key);
+        hideBackwardSearch();
+    }
+    function hideBackwardSearch(){
+        $(window).focus();
+        $("#backward-search").hide();
+        $("#backward-search>input").val("");
+    }
+    $("#backward-search>input").keydown(function(evt){
+        switch(evt.keyCode){
+        case 10:
+        case 13: // <Enter>
+            doBackwardSearch($(this).val());
+            break;
+        case 27: // Esc
+            hideBackwardSearch();
+            break;
+        default:
+            break;
+        }
+        evt.stopPropagation();
+    }).blur(hideBackwardSearch);
+    $().keydown(function(evt){
+        if(window.console && window.console.log){window.console.log(evt.keyCode);}
+        var help = $("#help");
+        help.hide();
+        switch(evt.keyCode){
+        case 10:
+        case 13: // <Enter>
+            //go2(parseInt(location.hash.replace("#","")));
+            lastKey = evt.keyCode;
             break;
         case 27: // Esc
             if(count){count="";}
+            lastKey = evt.keyCode;
             break;
         case 39: // Right->
         case 40: // Down
         case 74: // j
             go(count||1);
             count="";
+            lastKey = evt.keyCode;
             break;
         case 37: // <-Left
         case 38: // Up
         case 75: // k
             go(count?"-"+count:-1);
             count="";
+            lastKey = evt.keyCode;
             break;
         case 71:
             if(evt.shiftKey){ // G
@@ -76,58 +169,85 @@ $(function(){
                 go2(count?parseInt(count):1);
                 lastKey=0;
                 count="";
+            }else{
+                lastKey = evt.keyCode;
             }
             break;
         case 48: // 0
             count+="0";
+            lastKey = evt.keyCode;
             break;
         case 49: // 1
             count+="1";
+            lastKey = evt.keyCode;
             break;
         case 50: // 2
             count+="2";
+            lastKey = evt.keyCode;
             break;
         case 51: // 3
             count+="3";
+            lastKey = evt.keyCode;
             break;
         case 52: // 4
             count+="4";
+            lastKey = evt.keyCode;
             break;
         case 53: // 5
             count+="5";
+            lastKey = evt.keyCode;
             break;
         case 54: // 6
             count+="6";
+            lastKey = evt.keyCode;
             break;
         case 55: // 7
             count+="7";
+            lastKey = evt.keyCode;
             break;
         case 56: // 8
             count+="8";
+            lastKey = evt.keyCode;
             break;
         case 57: // 9
             count+="9";
+            lastKey = evt.keyCode;
+            break;
+        case 78: // n
+            if(evt.shiftKey){
+                prevSearchResult();
+            }else{
+                nextSearchResult();
+            }
+            lastKey = evt.keyCode;
             break;
         case 188: // "<"
             toggleOutline(0);
             count="";
+            lastKey = evt.keyCode;
             break;
         case 190: // ">"
             toggleOutline(1);
             count="";
+            lastKey = evt.keyCode;
+            break;
+        case 191: // "/"
+            if(evt.shiftKey){
+                //backwardSearch();
+
+                help.show();
+            }else{
+                forwardSearch();
+            }
+            evt.stopPropagation();
+            lastKey = evt.keyCode;
+            return false;
             break;
         default:
+            lastKey = evt.keyCode;
             break;
         }
-        lastKey = evt.keyCode;
         $("#count").text(count);
-        var help = $("#help");
-        if(evt.keyCode==191 && evt.shiftKey){ // ?
-            help.show();
-        //}else if(evt.keyCode!=16){
-        }else{
-            help.hide();
-        }
     });
     window.onhashchange = function(){
         go2(parseInt(location.hash.replace("#","")));

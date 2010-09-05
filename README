@@ -1,13 +1,40 @@
 
-TODO.
-    Vim-like key mapping.
-    Outline
-    Auto play.
+HTML5 Slides
 
+= TODO =
+    [ ] 自动播放(Auto play)。
+    [X] 显示大纲视图(Outline)，在翻页时同步状态；
+    [?] 大纲视图支持多级结构。
+    [?] 显示左右/上下的部分内容
+    [X] 支持左右/上下滑动效果
+    [ ] 丰富的预定义页面元素(list,pre,code,note,warn,info,err...)
+    [.] Vim-like key mapping.
+        [ ] 最初 j/k 是整页跳转的。调整：j/k 支持页内 List 的切换。
+        [ ] J/<C-f> Forword, 整页向前翻页。
+        [ ] K/<C-b> Backword, 整页向后翻页。
+        [ ] / 正向搜索。
+        [ ] ? 反向搜索。
+        [?] * 正向搜索选择的文本。
+        [?] # 反向搜索选择的文本。
+        [ ] n 下一个搜索结果。
+        [ ] N 上一个搜索结果。
+        [ ] m Mark, 并在 Outline 中为有 mark 的 Slide 页显示标记。
+        [?] v 可视模式，用来选中文本，如果做的话，还要做 h/l/w/b/e 之类的光标移动，
+            及文本对象(text-objects)支持。
+        [ ] o 打开外部(XML/HTML5)定义的 Slide 档。
+    [ ] 鼠标滚轮支持（Slide Content & Outline）。
+    [ ] 支持嵌入(HTML5)视频/音频。
+    [ ] 嵌入地图
+    [ ] 代码语法高亮。
+    [ ] 打开外部定义的 Slides 内容(xml/html5 格式)。
+    [ ] Slide Content 部分的字体缩放支持(+,-,0)。
+    [ ] 字体根据可视区域大小自动缩放。
+    [?] WYSIWYG Editor, Drag & Drop.
 
-REF.
+= REF =
 http://www.html5rocks.com/
     http://slides.html5rocks.com/
     http://code.google.com/p/html5rocks
+http://shawphy.com/2010/09/no-ppt-html5-rocks.html
 http://code.google.com/p/openbookproject/wiki/ZoomQuiet
     http://py.kingsoft.net/s5/100826-PyTDD/

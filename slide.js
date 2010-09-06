@@ -24,6 +24,7 @@ $(function(){
         docHi = $(document.body).height();
         $('#content>div.slide').css({"height":docHi+"px"});
         $('#outline-box').height(docHi-$('#outline>h4').outerHeight());
+        go2(CURR_PAGE||1, 1);
     }
     $("#outline-bd>li").click(function(){
         go2($(this).attr("id").replace("idx-", ""));
@@ -39,7 +40,7 @@ $(function(){
             x.text("<")
         }else{
             o.css({"left":"-200px"});
-            c.css({"margin-left":0})
+            c.css({"margin-left":10})
             x.text(">")
         }
     }
@@ -103,6 +104,7 @@ $(function(){
                 return;
             }
         }
+        go2(SEARCHRESULTS[SEARCHRESULTS.length-1]);
     }
     function nextSearchResult(){
         if(!SEARCHRESULTS.length){return;}
@@ -112,6 +114,7 @@ $(function(){
                 return;
             }
         }
+        go2(SEARCHRESULTS[0]);
     }
     function forwardSearch(){
         $("#forward-search").show();
@@ -135,7 +138,16 @@ $(function(){
         $("#forward-search>input").val("");
     }
     $("#forward-search>input").keydown(function(evt){
-        switch(evt.keyCode){
+        var key = evt.keyCode||evt.charCode;
+        if(window.console && window.console.log){window.console.log(key);}
+        switch(key){
+        case 8: // <BackSpace>
+            if(this.value==""){
+                $(this).blur();
+                evt.stopPropagation();
+                return false;
+            }
+            break;
         case 10:
         case 13: // <Enter>
             doForwardSearch($(this).val());
@@ -149,41 +161,50 @@ $(function(){
             break;
         }
         evt.stopPropagation();
+        return true;
     }).blur(hideForwardSearch);
 
-    function backwardSearch(){
-        $("#backward-search").show();
-        $("#backward-search>input").focus();
+    function showCommand(){
+        $("#command-bar").show();
+        $("#command-bar>input").focus();
     }
-    function doBackwardSearch(key){
-        doSearch(key);
-        hideBackwardSearch();
+    function hideCommand(){
+        $("#command-bar").hide();
+        $("#command-bar>input").val("");
     }
-    function hideBackwardSearch(){
-        //$(window).focus();
-        $("#backward-search>input").blur();
-        $("#backward-search").hide();
-        $("#backward-search>input").val("");
-    }
-    $("#backward-search>input").keydown(function(evt){
-        switch(evt.keyCode){
+    $("#command-bar>input").keydown(function(evt){
+        var key = evt.keyCode||evt.charCode;
+        switch(key){
+        case 8: // <BackSpace>
+            if(this.value==""){
+                $(this).blur();
+                evt.stopPropagation();
+                return false;
+            }
+            break;
         case 10:
         case 13: // <Enter>
-            doBackwardSearch($(this).val());
+            doCommand($(this).val());
+            $("#command-bar>input").blur();
             break;
         case 27: // Esc
-            hideBackwardSearch();
+            hideCommand();
+            $("#command-bar>input").blur();
             break;
         default:
             break;
         }
         evt.stopPropagation();
-    }).blur(hideBackwardSearch);
+        return true;
+    }).blur(hideCommand);
+    function doCommand(cmd){}
+
     $().keydown(function(evt){
+        var key = evt.keyCode||evt.charCode;
         if(window.console && window.console.log){window.console.log(evt.keyCode);}
         var help = $("#help");
         help.hide();
-        switch(evt.keyCode){
+        switch(key){
         case 10:
         case 13: // <Enter>
             //go2(parseInt(location.hash.replace("#","")));
@@ -222,43 +243,52 @@ $(function(){
             break;
         case 48: // 0
             count+="0";
-            lastKey = evt.keyCode;
+            lastKey = key;
             break;
         case 49: // 1
             count+="1";
-            lastKey = evt.keyCode;
+            lastKey = key;
             break;
         case 50: // 2
             count+="2";
-            lastKey = evt.keyCode;
+            lastKey = key;
             break;
         case 51: // 3
             count+="3";
-            lastKey = evt.keyCode;
+            lastKey = key;
             break;
         case 52: // 4
             count+="4";
-            lastKey = evt.keyCode;
+            lastKey = key;
             break;
         case 53: // 5
             count+="5";
-            lastKey = evt.keyCode;
+            lastKey = key;
             break;
         case 54: // 6
             count+="6";
-            lastKey = evt.keyCode;
+            lastKey = key;
             break;
         case 55: // 7
             count+="7";
-            lastKey = evt.keyCode;
+            lastKey = key;
             break;
         case 56: // 8
             count+="8";
-            lastKey = evt.keyCode;
+            lastKey = key;
             break;
         case 57: // 9
             count+="9";
-            lastKey = evt.keyCode;
+            lastKey = key;
+            break;
+        case 59: // FF :
+        case 186: // IE :
+            if(evt.shiftKey){
+                showCommand();
+            }
+            evt.stopPropagation();
+            lastKey = key;
+            return false;
             break;
         case 78: // n
             if(evt.shiftKey){
@@ -266,17 +296,28 @@ $(function(){
             }else{
                 nextSearchResult();
             }
-            lastKey = evt.keyCode;
+            lastKey = key;
+            break;
+        case 107: // =/+
+            fontSize(+1);
+            break;
+        case 109: //-/_
+            fontSize(-1);
+            break;
+        case 112: // <F1>
+            help.show();
+            evt.stopPropagation();
+            return false;
             break;
         case 188: // "<"
             if(evt.shiftKey)toggleOutline(0);
             count="";
-            lastKey = evt.keyCode;
+            lastKey = key;
             break;
         case 190: // ">"
             if(evt.shiftKey)toggleOutline(1);
             count="";
-            lastKey = evt.keyCode;
+            lastKey = key;
             break;
         case 191: // "/"
             if(evt.shiftKey){
@@ -287,11 +328,11 @@ $(function(){
                 forwardSearch();
             }
             evt.stopPropagation();
-            lastKey = evt.keyCode;
+            lastKey = key;
             return false;
             break;
         default:
-            lastKey = evt.keyCode;
+            lastKey = key;
             break;
         }
         $("#count").text(count);
@@ -300,14 +341,21 @@ $(function(){
         go2(parseInt(location.hash.replace("#","")));
     };
 
+    function fontSize(offset){
+        var o=$("#content>div.slide");
+        o.css("font-size", parseInt(o.css("font-size"))+offset)
+        if(window.console && window.console.log){window.console.log(o.css("font-size"));}
+    }
     function go(offset){
         go2(CURR_PAGE+parseInt(offset));
-        //if(window.console && window.console.log){window.console.log(CURR_PAGE,",",offset);}
     }
-    function go2(page){
+    function go2(page, flag){
         page = parseInt(page);
         var p = page-1;
-        if(page<=0 || page>MAX_PAGE || page==CURR_PAGE){return;}
+        if(page==CURR_PAGE && !flag){return;}
+        if(page<1){p=0; page=1;}
+        if(page>MAX_PAGE){p=MAX_PAGE-1; page=MAX_PAGE;}
+
         $("#content").css({"top":"-"+(p*docHi)+"px"});
         //$("#content").animate({"top":"-"+(p*docHi)+"px"},200);
         $("#outline-bd>li.active").removeClass("active");

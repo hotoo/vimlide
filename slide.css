@@ -19,7 +19,7 @@ html,body{margin:0; padding:0; overflow:hidden; width:100%; height:100%;
         }
         #outline-box{overflow:hidden; height:95%; position:relative}
         #outline-box:hover{overflow:auto; overflow-x:hidden\9; overflow-y:auto\9;}
-        #outline-bd{position:absolute; left:0; top:0;}
+        #outline-bd{position:absolute; left:0; top:0; margin:0; padding:2em;}
         #outline-bd a{color:#666; text-decoration:none;}
         #outline-bd li:hover a{background:#eee; color:#000;}
         #outline-bd li.active a{background:blue; color:#fff;}
@@ -47,15 +47,20 @@ html,body{margin:0; padding:0; overflow:hidden; width:100%; height:100%;
         #btn-backword{}
         #btn-pause{display:none!important;}
     #help{
-        background:#333 none; color:#fff;
+        background:#000 none; color:#fff;
         display:none;
         position:absolute; left:100px; top:50px; width:80%; height:80%;
-        -moz-opacity:.8; opacity:.8; -ms-filter:"alpha(opacity=80)"; filter:alpha(opacity=80); zoom:1;
+        -moz-opacity:.85; opacity:.85; -ms-filter:"alpha(opacity=80)"; filter:alpha(opacity=80); zoom:1;
         /*background:transparent url(frame_grey.png);*/
         -moz-border-radius:8px; -khtml-border-radius:8px; -webkit-border-radius:8px; border-radius:8px;
     }
+        #help table{border-collapse:collapse; border-spacing:0; width:90%; margin:2em auto;}
+        #help th{font-size:1.5em; text-align:left; border-bottom:1px solid #ccc;}
+        #help-close{text-align:right!important;}
+        #help td.key{color:#c5da01; text-align:right; padding:3px 8px; font-family:"Courier New";}
 div.slide{display:block; width:100%; height:100%;}
-cite.search{background:#ff0 none; font-style:normal; font-weight:bold;}
+cite.slide-search,
+#outline-bd li.slide-search a{background:#ff0 none; font-style:normal; font-weight:bold;}
 
 
 

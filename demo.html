@@ -33,13 +33,58 @@
             <a href="javascript:void(0);" id="btn-foreword">Foreword</a>
         </div>
         <div id="help">
-            <h4>Help?</h4>
-            ? Shift+/ show help.<br />
-            &lt; Shift+, hide outline.<br />
-            &gt; Shift+. show outline.<br />
-            j move to next slide.<br />
-            k move to prev slide.<br />
-            support {count}key
+            <table>
+            <thead>
+                <tr>
+                    <th colspan="2" width="50%">Help</th>
+                    <th colspan="2" width="50%" id="help-close"><span>Close</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td width="30" class="key">{count}j</td>
+                    <td class="desc">向后翻 {count} 页。</td>
+                    <td width="30" class="key">/</td>
+                    <td class="desc">正向搜索。</td>
+                </tr>
+                <tr>
+                    <td class="key">{count}k</td>
+                    <td class="desc">向前翻 {count} 页。</td>
+                    <td class="key">n</td>
+                    <td class="desc">下一个搜索结果项。</td>
+                </tr>
+                <tr>
+                    <td class="key"></td>
+                    <td class="desc"></td>
+                    <td class="key">N</td>
+                    <td class="desc">上一个搜索结果项。</td>
+                </tr>
+                <tr>
+                    <td class="key">{count}gg</td>
+                    <td class="desc">翻到第 {count} 页；缺省翻到第 1 页。</td>
+                    <td class="key">&gt;</td>
+                    <td class="desc">显示大纲视图。</td>
+                </tr>
+                <tr>
+                    <td class="key">{count}G</td>
+                    <td class="desc">翻到第 {count} 页；缺省翻到最后一页。</td>
+                    <td class="key">&lt;</td>
+                    <td class="desc">隐藏大纲视图。</td>
+                </tr>
+                <tr>
+                    <td class="key"></td>
+                    <td class="desc"></td>
+                    <td class="key">?</td>
+                    <td class="desc">显示帮助。触发其他按键会自动隐藏帮助信息。</td>
+                </tr>
+                <tr>
+                    <td class="key"></td>
+                    <td class="desc"></td>
+                    <td class="key"></td>
+                    <td class="desc"></td>
+                </tr>
+            </tbody>
+            </table>
         </div>
     </div>
 

@@ -7,18 +7,31 @@ HTML5 Slides
     [?] 大纲视图支持多级结构。
     [?] 显示左右/上下的部分内容
     [X] 支持左右/上下滑动效果
-    [ ] 丰富的预定义页面元素(list,pre,code,note,warn,info,err...)
-    [.] Vim-like key mapping.
+    [.] 丰富的预定义页面元素(list,pre,code,note,warn,info,err...)
+    [o] Vim-like key mapping.
         [ ] 最初 j/k 是整页跳转的。调整：j/k 支持页内 List 的切换。
-        [ ] J/<C-f> Forword, 整页向前翻页。
-        [ ] K/<C-b> Backword, 整页向后翻页。
-        [ ] / 正向搜索。
-        [ ] ? 反向搜索。
+            [ ] {count}j 高亮激活到向下数第 {count} 个列表项(List Item)；
+                        如果当前项是最后一项，翻到下一页。
+            [ ] {count}k 高亮激活到向上数第 {count} 个列表项(List Item)；
+                        如果当前项是最后一项，翻到上一页。
+        [o] {count}J/<C-f> Forword, 整页向前翻页。
+        [o] {count}K/<C-b> Backword, 整页向后翻页。
+        [ ] <PageDown> 向下翻页。
+        [ ] <PageUp> 向上翻页。
+        [O] / 正向搜索。
+        [X] ? 查看帮助(另有计划做反向搜索，但考虑实用性，放弃)
         [?] * 正向搜索选择的文本。
         [?] # 反向搜索选择的文本。
-        [ ] n 下一个搜索结果。
-        [ ] N 上一个搜索结果。
+        [X] n 下一个搜索结果。
+        [X] N 上一个搜索结果。
+        [X] gg 翻到第 1 页。
+        [ ] <Home> 翻到第 1 页。
+        [X] G 翻到最后一页。
+        [ ] <PageUp> 翻到最后一页。
+        [X] {count}gg / {count}G 翻到第 {count} 页。
+        [ ] 搜索历史，可以通过上下方向键自动补全。
         [ ] m Mark, 并在 Outline 中为有 mark 的 Slide 页显示标记。
+        [X] 支持量词 {count}。
         [?] v 可视模式，用来选中文本，如果做的话，还要做 h/l/w/b/e 之类的光标移动，
             及文本对象(text-objects)支持。
         [ ] o 打开外部(XML/HTML5)定义的 Slide 档。

@@ -47,43 +47,87 @@ $(function(){
     $("#btn-backword").click(function(){go(-1);})
     $("#btn-foreword").click(function(){go(1);})
 
-    var searchDir = 1; // forward(1), backward(0).
-    var searchResults = [];
+    var SEARCHRESULTS = [];
+    var SEARCH_HISTORY=[], SEARCH_HISTORY_CACHE={};
     function doSearch(key){
-        var re = new RegExp('('+key+')', key==key.toLowerCase()?"ig":"g");
-        $('cite.search').each(function(){
+        var re = new RegExp('('+key+')', key==key.toLowerCase()?"img":"mg");
+        $("#outline-bd>li.slide-search").removeClass("slide-search");
+        $('span.slide-search').each(function(){
             $(this).replaceWith($(this).text());
         });
-        searchResults = [];
-        $("#content>div.slide").each(function(i){
-            $("*",this).each(function(){
-                if(!$(this).children().length){
-                    $(this).html($(this).text().replace(re,'<cite class="search">$1</cite>'));
-                    searchResults.push(i);
-                }
-            });
+        var r = [];
+        if(!key){return r;}
+        $("#content>div.slide").each(function(page){
+            var has = searchTextNode(this.childNodes);
+            if(has){
+                r.push(page+1);
+                $("#outline-bd>li:eq("+page+")").addClass("slide-search");
+            }
         });
+        function searchTextNode(nodes){
+            var has = false;
+            for(var i=0,l=nodes.length; i<l; i++){
+                if(nodes[i].nodeType==1){ // ELEMENT_NODE
+                    var b = searchTextNode(nodes[i].childNodes);
+                    if(!has){has = b;}
+                }else if(nodes[i].nodeType==3){ // TEXT_NODE
+                    var tag=nodes[i].parentNode.tagName;
+                    if(tag=="script" || tag=="style"){continue;}
+                    if(!nodes[i].nodeValue.match(re)){continue;}
+                    var s=nodes[i].nodeValue.replace(re,'<cite class="slide-search">$1</cite>');
+                    if(s==nodes[i].nodeValue){continue;}
+                    // FIXME: &lt;script&gt; convert <script> and exec it.
+                    var n=document.createElement("span");
+                    n.className = "slide-search";
+                    n.innerHTML = s;
+                    nodes[i].parentNode.replaceChild(n, nodes[i]);
+                    has = true;
+
+                    // ======= The following code exec regexp twice. ========
+                    //var n=document.createElement("span");
+                    //n.className = "slide-search";
+                    //n.innerHTML = nodes[i].nodeValue.replace(re,'<cite class="slide-search">$1</cite>');
+                    //nodes[i].parentNode.replaceChild(n, nodes[i]);
+                    //has = true;
+                }
+            }
+            return has;
+        }
+        return r;
     }
     function prevSearchResult(){
-        if(!searchResults.length){return;}
-        if(searchDir){
-            for(var i=0,l=searchResults.length; i<l; i++){
-                //if(CURR_PAGE>)
-            }
-        }else{
-            for(var i=searchResults.length; i>0; i--){
-                //if(CURR_PAGE>)
+        if(!SEARCHRESULTS.length){return;}
+        for(var i=SEARCHRESULTS.length-1; i>=0; i--){
+            if(CURR_PAGE>SEARCHRESULTS[i]){
+                go2(SEARCHRESULTS[i]);
+                return;
             }
         }
     }
-    function nextSearchResult(){}
+    function nextSearchResult(){
+        if(!SEARCHRESULTS.length){return;}
+        for(var i=0,l=SEARCHRESULTS.length; i<l; i++){
+            if(CURR_PAGE<SEARCHRESULTS[i]){
+                go2(SEARCHRESULTS[i]);
+                return;
+            }
+        }
+    }
     function forwardSearch(){
         $("#forward-search").show();
         $("#forward-search>input").focus();
     }
     function doForwardSearch(key){
-        doSearch(key);
+        SEARCHRESULTS = doSearch(key);
         hideForwardSearch();
+        if(SEARCHRESULTS.length==0){return;}
+        for(var i=0,l=SEARCHRESULTS.length; i<l; i++){
+            if(CURR_PAGE <= SEARCHRESULTS[i]){
+                go2(SEARCHRESULTS[i]);
+                return;
+            }
+        }
+        go2(SEARCHRESULTS[0]);
     }
     function hideForwardSearch(){
         $(window).focus();

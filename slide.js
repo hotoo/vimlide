@@ -130,7 +130,7 @@ $(function(){
         go2(SEARCHRESULTS[0]);
     }
     function hideForwardSearch(){
-        $(window).focus();
+        //$(window).focus();
         $("#forward-search").hide();
         $("#forward-search>input").val("");
     }
@@ -139,9 +139,11 @@ $(function(){
         case 10:
         case 13: // <Enter>
             doForwardSearch($(this).val());
+            $("#forward-search>input").blur();
             break;
         case 27: // Esc
             hideForwardSearch();
+            $("#forward-search>input").blur();
             break;
         default:
             break;
@@ -158,7 +160,8 @@ $(function(){
         hideBackwardSearch();
     }
     function hideBackwardSearch(){
-        $(window).focus();
+        //$(window).focus();
+        $("#backward-search>input").blur();
         $("#backward-search").hide();
         $("#backward-search>input").val("");
     }
@@ -266,12 +269,12 @@ $(function(){
             lastKey = evt.keyCode;
             break;
         case 188: // "<"
-            toggleOutline(0);
+            if(evt.shiftKey)toggleOutline(0);
             count="";
             lastKey = evt.keyCode;
             break;
         case 190: // ">"
-            toggleOutline(1);
+            if(evt.shiftKey)toggleOutline(1);
             count="";
             lastKey = evt.keyCode;
             break;

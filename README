@@ -16,20 +16,37 @@ HTML5 Slides
                         如果当前项是最后一项，翻到上一页。
         [o] {count}J/<C-f> Forword, 整页向前翻页。
         [o] {count}K/<C-b> Backword, 整页向后翻页。
-        [ ] <PageDown> 向下翻页。
-        [ ] <PageUp> 向上翻页。
-        [O] / 正向搜索。
+        [ ] {count}<PageDown> 向下翻页。
+        [ ] {count}<PageUp> 向上翻页。
+        [O] / 正向搜索。客户端搜索历史，可以通过上下方向键自动补全。
+        [ ] q/ 显示搜索历史列表。
         [X] ? 查看帮助(另有计划做反向搜索，但考虑实用性，放弃)
         [?] * 正向搜索选择的文本。
         [?] # 反向搜索选择的文本。
-        [X] n 下一个搜索结果。
-        [X] N 上一个搜索结果。
-        [X] gg 翻到第 1 页。
+        [X] {count}n 下一个搜索结果。
+        [X] {count}N 上一个搜索结果。
+        [X] {count}gg 翻到第 {count} 页。缺省翻到第 1 页。
         [ ] <Home> 翻到第 1 页。
-        [X] G 翻到最后一页。
-        [ ] <PageUp> 翻到最后一页。
-        [X] {count}gg / {count}G 翻到第 {count} 页。
-        [ ] 搜索历史，可以通过上下方向键自动补全。
+        [X] {count}G 翻到第 {count} 页。缺省翻到最后一页。
+        [ ] <End> 翻到最后一页。
+        [ ] {count}<Ctrl-o> 跳转到跳转表里第 {count} 个较旧的页面。
+        [ ] {count}<Ctrl-i> 跳转到跳转表里第 {count} 个较新的页面。
+        [ ] + 字体放大。
+        [ ] - 字体缩小。
+        [ ] 1-9 输入 {count}
+        [ ] 0 如果 {count} 为空，还原字体大小；否则当作 {count} 输入并继续。
+        [ ] :play 开始播放。
+        [ ] :pause 暂停播放。
+        [ ] :stop 暂停播放。
+        [ ] :ic
+        [ ] :ig[norecase] 搜索时区分大小写。
+        [ ] :noic
+        [ ] :noig[norecase] 搜索时不区分大小写。
+        [ ] :sc
+        [ ] :smartcase 搜索时使用智能大小写匹配。
+        [ ] :nosc
+        [ ] :nosmartcase 搜索时不使用智能大小写匹配。
+        [ ] :ju[mps] 打开跳转表。
         [ ] m Mark, 并在 Outline 中为有 mark 的 Slide 页显示标记。
         [X] 支持量词 {count}。
         [?] v 可视模式，用来选中文本，如果做的话，还要做 h/l/w/b/e 之类的光标移动，

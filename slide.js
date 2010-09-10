@@ -199,6 +199,10 @@ $(function(){
     }).blur(hideCommand);
     function doCommand(cmd){}
 
+    //function map(){}
+    function nmap(key, callback){}
+    function cmap(key, callback){}
+
     $().keydown(function(evt){
         var key = evt.keyCode||evt.charCode;
         if(window.console && window.console.log){window.console.log(evt.keyCode);}

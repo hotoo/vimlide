@@ -24,7 +24,7 @@ Vim-like HTML5 Slide 是一个模拟 Vim 键盘映射和其他特性的演示文
 可以使用 HTML5 写成，同时也有计划支持 s5 和 html5rocks 档。
 目前 Google Presentation 还没有提供 API ，不过本项目也有支持它的念头。
 
-本文档中，包含在中括号 "[]" 中的内容是可选的部分；花括号 "{}" 中是必填的部分。
+本文档中，包含在中括号 "[]" 中的内容是可选的；花括号 "{}" 中是必须的。
 
 手册中的“前”，是指比当前页码小的页，第一页是最前面的页；
 手册中的“后”，则指比当前页码大的页，比如最后一页。
@@ -39,21 +39,21 @@ Vim-like HTML Slide 支持常用的 Vim 键盘映射。
                                                         *j* *<PageDown>*
                                                         *J* *<Ctrl-f>*
                                                         *<Right>* *<Down>*
-j           或
-<PageDown>  或
-J           或
-<Ctrl-f>    或
-<Right>     或
+j               或
+<PageDown>      或
+J               或
+<Ctrl-f>        或
+<Right>         或
 <Down>                  向后翻动 [count] 页。
 
                                                         *k* *<PageUp>*
                                                         *K* *<Ctrl-b>*
                                                         *<Left>* *<Up>*
-k           或
-<PageUp>    或
-K           或
-<Ctrl-b>    或
-<Left>      或
+k               或
+<PageUp>        或
+K               或
+<Ctrl-b>        或
+<Left>          或
 <Up>                    向前翻动 [count] 页。
 
                                                         *gg* *<Home>*
@@ -63,6 +63,9 @@ gg                      翻到第 [count] 页，缺省是第一页。
                                                         *G* *<End>*
 G                       翻到第 [count] 页，缺省是最后一页。
 <End>                   翻到最后一页。
+
+                                                        *:{count}*
+:{count}                翻到第 {count} 页。
 
                                                         *%*
 {count}%                翻到 Slide 档的 {count} 百分比处。注意：{count} 是必须的。
@@ -124,13 +127,18 @@ Vim-like HTML5 Slide 仅支持正向搜索，使用 '/' 开始搜索。
 Vim 中用来反向搜索的 '?' 在这里用作快速启动帮助信息。
 
                                                         */*
-/{pattern}/<CR>         正向查找并高亮出现 {pattern} 的页。
+/{pattern}[/iIcC]<CR>   正向查找并高亮出现 {pattern} 的页。
                         如果当前页出现 {pattern}，则保存不动（不翻页）；
                         否则，自动翻到下一个出现 {pattern} 的页。
                         搜索结果，及对应页面在大纲视图上的项都会被高亮。
 
                         {pattern} 为空时，会取消搜索并清空上次的搜索结果
                         （这跟 Vim 不同）。
+
+                        后面带 '/i' 标记，则临时使用忽略大小写的搜索方式；
+                        后面带 '/I' 标记，则临时使用区分大小写的搜索方式；
+                        '/c' 标记，同 '/i'；
+                        '/C' 标记，同 '/I'。
 
                                                         *n*
 n                       向后翻到第 [count] 次出现 {pattern} 的页，如果 [count]
@@ -148,21 +156,21 @@ N                       向前翻到第 [count] 次出现 {pattern} 的页。如
 
                                                         *:ic* *:ignorecase*
                                                         *:noic* *:noignorecase*
-:ic         或
+:ic             或
 :ig[norecase]           搜索时忽略大小写。
 
-:noic       或
+:noic           或
 :noig[norecase]         搜索时区分大小写。
 
                                                         *:sc* *:smartcase*
                                                         *:nosc* *:nosmartcase*
-:sc         或
+:sc             或
 :smartcase              搜索时使用智能匹配大小写。
                         如果 {pattern} 中存在大写字符，则区分大小写；
                         否则，忽略大小写。
                         这是默认设置。
 
-:nosc       或
+:nosc           或
 :nosmartcase            搜索时不使用智能匹配大小写。
 
                                                         *q/*

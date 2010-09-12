@@ -60,6 +60,7 @@ HTML5 Slides
     [ ] Slide Content 部分的字体缩放支持(+,-,0)。
     [ ] 字体根据可视区域大小自动缩放。
     [?] WYSIWYG Editor, Drag & Drop.
+    [ ] Slide 档本身可以内嵌在网页中（以iframe 或者考虑其他形式）
 
 = REF =
 http://www.html5rocks.com/
@@ -69,3 +70,4 @@ http://meyerweb.com/eric/tools/s5/
 http://shawphy.com/2010/09/no-ppt-html5-rocks.html
 http://code.google.com/p/openbookproject/wiki/ZoomQuiet
     http://py.kingsoft.net/s5/100826-PyTDD/
+[http://kudakurage.com/hNote/ HTML5 Slide Creator]

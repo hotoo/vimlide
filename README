@@ -1,5 +1,11 @@
 
-HTML5 Slides
+Vimlide : Vim-like HTML(5) Slide.
+
+  Vimlike (Vim-like)
++ html
++   Slide
+= Vimlide
+
 
 = TODO =
     [ ] 自动播放(Auto play)。

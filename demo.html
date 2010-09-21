@@ -9,7 +9,7 @@
 <meta name="author" content="闲耘™ (hotoo.cn[AT]gmail.com)" />
 <link rel="icon" href="favicon.ico" type="image/x-icon" />
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-<link rel="stylesheet" type="text/css" href="slide.css" media="all" />
+<link rel="stylesheet" type="text/css" href="Vimlide.css" media="all" />
 <title>HTML5 Slide Demo</title>
 </head>
 <body>
@@ -588,6 +588,12 @@ if(UA.ie < 8) {
 
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
-    <script type="text/javascript" src="slide.js"></script>
+    <script type="text/javascript" src="Event.js"></script>
+    <script type="text/javascript" src="Vimlide.js"></script>
+    <script type="text/javascript">/*<![CDATA[*/
+        window.onload = function(){
+            var s = new Slide();
+        };
+    /*]]>*/</script>
 </body>
 </html>

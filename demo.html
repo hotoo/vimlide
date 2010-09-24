@@ -13,128 +13,8 @@
 <title>HTML5 Slide Demo</title>
 </head>
 <body>
-    <div id="wrapper">
-        <div id="info-msg">INFO.</div>
-        <div id="container">
-            <div id="content"><div id="slides"></div></div>
-        </div>
-        <div id="outline">
-            <a href="javascript:void(0);" id="btn-outline-hider">&lt;</a>
-            <h4>Outline:</h4>
-            <div id="outline-box"><ol id="outline-bd"></ol></div>
-        </div>
-        <div id="toolbar">
-            <span id="count"></span>
-            <div id="forward-search" class="status-bar">/<input type="search" /></div>
-            <div id="command-bar" class="status-bar">:<input type="text" /></div>
-            <span><input type="text" id="lab-curr" value="0" />/<cite id="lab-max">0</cite></span>
-            <a href="javascript:void(0);" id="btn-backword">&laquo; Backword</a>
-            <a href="javascript:void(0);" id="btn-play">Play &rsaquo;</a>
-            <a href="javascript:void(0);" id="btn-pause">Pause &Iota;&Iota;</a>
-            <a href="javascript:void(0);" id="btn-foreword">Foreword &raquo;</a>
-        </div>
-        <div id="help">
-            <table>
-            <thead>
-                <tr>
-                    <th colspan="2" width="50%">键盘映射(快捷键)</th>
-                    <th colspan="2" width="50%" id="help-close"><span>Close</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td width="80" class="key">{count}j</td>
-                    <td class="desc">向后翻 {count} 页，缺省向后翻 1 页。</td>
-                    <td width="80" class="key">/</td>
-                    <td class="desc">正向搜索，注意右下角的搜索输入框，输入关键字或 JavaScript 正则模式，并回车。</td>
-                </tr>
-                <tr>
-                    <td class="key">{count}k</td>
-                    <td class="desc">向前翻 {count} 页，缺省向前翻 1 页。</td>
-                    <td class="key">{count}n</td>
-                    <td class="desc">向后翻到第 {count} 个搜索结果页，缺省翻到后一个搜索结果页。</td>
-                </tr>
-                <tr>
-                    <td class="key"></td>
-                    <td class="desc"></td>
-                    <td class="key">{count}N</td>
-                    <td class="desc">向前翻到第 {count} 个搜索结果页，缺省翻到前一个搜索结果页。</td>
-                </tr>
-                <tr>
-                    <td class="key">{count}gg</td>
-                    <td class="desc">翻到第 {count} 页；缺省翻到第 1 页。</td>
-                    <td class="key">&gt;</td>
-                    <td class="desc">显示大纲视图。</td>
-                </tr>
-                <tr>
-                    <td class="key">{count}G</td>
-                    <td class="desc">翻到第 {count} 页；缺省翻到最后一页。</td>
-                    <td class="key">&lt;</td>
-                    <td class="desc">隐藏大纲视图。</td>
-                </tr>
-                <tr>
-                    <td class="key"></td>
-                    <td class="desc"></td>
-                    <td class="key">?</td>
-                    <td class="desc">显示帮助。触发其他按键会自动隐藏帮助信息。</td>
-                </tr>
-                <tr>
-                    <td class="key">{count}+</td>
-                    <td class="desc">字体放大 {count} 像素，缺省放大 1 像素。</td>
-                    <td class="key"></td>
-                    <td class="desc"></td>
-                </tr>
-                <tr>
-                    <td class="key">{count}-</td>
-                    <td class="desc">字体缩小 {count} 像素，缺省缩小 1 像素。</td>
-                    <td class="key">&lt;Esc&gt;</td>
-                    <td class="desc">重置操作，例如清除 {count}，退出 Help 模式，退出搜索模式等。</td>
-                </tr>
-                <tr>
-                    <td class="key">0</td>
-                    <td class="desc">(数字零) 字体还原到初始大小。</td>
-                    <td class="key">o</td>
-                    <td class="desc">打开外部 Slide 档。</td>
-                </tr>
-                <tr>
-                    <th colspan="4">命令</th>
-                </tr>
-                <tr>
-                    <td class="key">:play</td>
-                    <td class="desc">开始播放。</td>
-                    <td class="key">:ig[norecase]<br />:ic<br />:noig[norecase]<br />:noic</td>
-                    <td class="desc">搜索忽略大小写。</td>
-                </tr>
-                <tr>
-                    <td class="key">:pause</td>
-                    <td class="desc">停止播放。</td>
-                    <td class="key">:smartcase<br />:sc<br />:nosmartcase<br />:nosc</td>
-                    <td class="desc">搜索时使用智能大小写匹配。</td>
-                </tr>
-                <tr>
-                    <td class="key">:stop</td>
-                    <td class="desc">停止播放。</td>
-                    <td class="key"></td>
-                    <td class="desc"></td>
-                </tr>
-                <tr>
-                    <td class="key"></td>
-                    <td class="desc"></td>
-                    <td class="key"></td>
-                    <td class="desc"></td>
-                </tr>
-                <tr>
-                    <td class="key"></td>
-                    <td class="desc"></td>
-                    <td class="key"></td>
-                    <td class="desc"></td>
-                </tr>
-            </tbody>
-            </table>
-        </div>
-    </div>
-
-
+<div id="demo" class="presentation">
+    <div class="slides">
         <div class="slide">
             <section class="center intro">
                 <h1>Behind a Gist</h1>
@@ -585,6 +465,8 @@ if(UA.ie < 8) {
                 <p style="font-size: 60px; margin-top: 180px">FAQ</p>
             </section>
         </div>
+    </div>
+</div>
 
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
@@ -592,7 +474,7 @@ if(UA.ie < 8) {
     <script type="text/javascript" src="Vimlide.js"></script>
     <script type="text/javascript">/*<![CDATA[*/
         window.onload = function(){
-            var s = new Slide();
+            var s = new Vimlide(document.getElementById("demo"));
         };
     /*]]>*/</script>
 </body>

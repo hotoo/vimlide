@@ -1,9 +1,9 @@
-*slide.cnx*     For Vim-like HTML5 Slide    最近更新：2010年9月
+*Vimlide.cnx*     For Vim-like HTML5 Slide    最近更新：2010年9月
 
-                    Vim-like HTML Slide 参考手册
+                Vimlide: Vim-like HTML(5) Slide 参考手册
 
                     by 闲耘™(hotoo.cn[AT]gmail.com)
-                    http://github.com/hotoo/html5slide
+                    http://github.com/hotoo/Vimlide
 
 1. 简介                     |intro|
 2. 翻页(移动)               |motion|
@@ -20,9 +20,15 @@
 ==============================================================================
 1. 简介                                                 *intro*
 
-Vim-like HTML5 Slide 是一个模拟 Vim 键盘映射和其他特性的演示文档工具，文档内容
-可以使用 HTML5 写成，同时也有计划支持 s5 和 html5rocks 档。
-目前 Google Presentation 还没有提供 API ，不过本项目也有支持它的念头。
+Vimlide 是一个模拟 Vim 键盘映射和其他特性的演示文档工具，
+演示文档的内容使用 HTML(5) 写成，与 s5 和 html5rocks 档大致相同。
+Vimlide 是由 Vim-like HTML(5) Slide 几个单词组成的缩写，表达式如下：
+>
+     Vimlike  (Vim-like)
+  +  html
+  +    Slide
+  =  Vimlide
+<
 
 本文档中，包含在中括号 "[]" 中的内容是可选的；花括号 "{}" 中是必须的。
 
@@ -34,27 +40,27 @@ Vim-like HTML5 Slide 是一个模拟 Vim 键盘映射和其他特性的演示文
 ==============================================================================
 2. 翻页(移动)                                           *motion*
 
-Vim-like HTML Slide 支持常用的 Vim 键盘映射。
-
-                                                        *j* *<PageDown>*
-                                                        *J* *<Ctrl-f>*
-                                                        *<Right>* *<Down>*
+                                                        *j* *<Down>*
 j               或
-<PageDown>      或
+<Down>                  向下步进 [count] 项。
+
+                                                        *J* *<Ctrl-f>*
+                                                        *<Right>* *<PageDown>*
 J               或
 <Ctrl-f>        或
 <Right>         或
-<Down>                  向后翻动 [count] 页。
+<PageDown>              向后翻动 [count] 页。
 
-                                                        *k* *<PageUp>*
-                                                        *K* *<Ctrl-b>*
-                                                        *<Left>* *<Up>*
+                                                        *k* *<Up>*
 k               或
-<PageUp>        或
+<Up>                    向下步进 [count] 项。
+
+                                                        *K* *<Ctrl-b>*
+                                                        *<Left>* *<PageUp>*
 K               或
 <Ctrl-b>        或
 <Left>          或
-<Up>                    向前翻动 [count] 页。
+<PageUp>                向前翻动 [count] 页。
 
                                                         *gg* *<Home>*
 gg                      翻到第 [count] 页，缺省是第一页。
@@ -123,7 +129,7 @@ m{a-zA-Z}               把当前 Slide 页标记为 {a-zA-Z}。
 ==============================================================================
 6. 搜索                                                 *search*
 
-Vim-like HTML5 Slide 仅支持正向搜索，使用 '/' 开始搜索。
+Vimlide 仅支持正向搜索，使用 '/' 开始搜索。
 Vim 中用来反向搜索的 '?' 在这里用作快速启动帮助信息。
 
                                                         */*

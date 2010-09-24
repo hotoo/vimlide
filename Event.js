@@ -27,11 +27,20 @@ var Event = {
 };
 Event.stop = function(evt){
     if(evt.stopPropagation){
-        evt.preventDefault();
         evt.stopPropagation();
+        evt.preventDefault();
     }else{
         evt.cancelBubble = true;
         evt.returnValue = false;
+    }
+};
+Event.pause = function(evt){
+    if(evt.stopPropagation){
+        evt.stopPropagation();
+        //evt.preventDefault();
+    }else{
+        evt.cancelBubble = true;
+        //evt.returnValue = false;
     }
 };
 // for keypress handler.
@@ -64,12 +73,12 @@ Event.CapsLock = function(evt){
 };
 Event.add = function(elem, evt, callback){
     if (elem.addEventListener) {
-        if(document==elem){
-            document["on"+evt] = callback;
-        }else{
-            elem.addEventListener(name, callback, false);
-        }
-    } else {
+        //if(document==elem){
+            //document["on"+evt] = callback;
+        //}else{
+            elem.addEventListener(evt, callback, false);
+        //}
+    } else if(elem.attachEvent) {
         elem.attachEvent("on"+evt, callback);
     }
 };

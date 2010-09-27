@@ -4,6 +4,7 @@
  * @author 闲耘™(hotoo, hotoo.cn[AT]gmail.com)
  * @version 1.0, 2010/09
  */
+// {{{
 var Queue = function(){
     this._list = [];
     for(var i=0,l=arguments.length; i<l; i++){
@@ -23,49 +24,149 @@ Queue.prototype.clear = function(){
 Queue.prototype.peek = function(){
     return this._list.length ? this._list[this._list.length-1] : null;
 };
-Function.createDelegate = function(instance, method) {
-	//var args = Array.from(arguments).splice(2,arguments.length - 2);
-    return function() {
-        return method.apply(instance, arguments);
-    }
-};
+// }}}
 
 
 var Vimlide = (function(){
     var RE_EMPTY=/^\s*$/;
-    function has(str, val) {
-        if (!str){return false;}
-        return (str.search('(^|\\s)'+val+'(\\s|$)') != -1);
-    }
-    function hasClass(elem, cls){
-        var c = elem.className;
-        if (!c || RE_EMPTY.test(c)){return false;}
-        return (c.search('(^|\\s)'+cls+'(\\s|$)') != -1);
-    }
-    var addClass = function(elem, cls){
-        if(!elem || hasClass(elem, cls)){return;}
-        var c=elem.className;
-        if(!c || RE_EMPTY.test(c)){elem.className = cls;}
-        else{elem.className += (" "+cls);}
-    };
-    var removeClass = function(elem, cls){
-        if(!elem || !hasClass(elem, cls)){return;}
-        var c=elem.className, a=c.split(" "), n=[];
-        for(var i=a.length-1; i>-1; i--){
-            if(cls==a[i]){n[n.length]=a[i];}
+    var D = {
+        has : function(str, val) {
+            if (!str){return false;}
+            return (str.search('(^|\\s)'+val+'(\\s|$)') != -1);
+        },
+        hasClass : function(elem, cls){
+            var c = elem.className;
+            if (!c || RE_EMPTY.test(c)){return false;}
+            return (c.search('(^|\\s)'+cls+'(\\s|$)') != -1);
+        },
+        addClass : function(elem, cls){
+            if(!elem || D.hasClass(elem, cls)){return;}
+            var c=elem.className;
+            if(!c || RE_EMPTY.test(c)){elem.className = cls;}
+            else{elem.className += (" "+cls);}
+        },
+        removeClass : function(elem, cls){
+            if(!elem || !D.hasClass(elem, cls)){return;}
+            var c=elem.className, a=c.split(" "), n=[];
+            for(var i=a.length-1; i>-1; i--){
+                if(cls==a[i]){n[n.length]=a[i];}
+            }
+            elem.className = n.join(" ");
+        },
+        children : function(elem){
+            if(!elem){return null;}
+            var c=elem.childNodes,r=[];
+            for(var i=0,l=c.length; i<l; i++){
+                if(1==c[i].nodeType){
+                    r[r.length] = c[i];
+                }
+            }
+            return r;
         }
-        elem.className = n.join(" ");
     };
-    function childNodes(elem){
-        if(!elem){return null;}
-        var c=elem.childNodes,r=[];
-        for(var i=0,l=c.length; i<l; i++){
-            if(1==c[i].nodeType){
-                r[r.length] = c[i];
+    var E = {
+        KEY_BACKSPACE: 8,
+        KEY_TAB     : 9,
+        KEY_RETURN  : 13,
+        KEY_SHIFT   : 16,
+        KEY_CTRL    : 17,
+        KEY_CAPSLOCK: 20,
+        KEY_ESC     : 27,
+        KEY_LEFT    : 37,
+        KEY_UP      : 38,
+        KEY_RIGHT   : 39,
+        KEY_DOWN    : 40,
+        KEY_DELETE  : 46,
+        KEY_HOME    : 36,
+        KEY_END     : 35,
+        KEY_PAGEUP  : 33,
+        KEY_PAGEDOWN: 34,
+        KEY_INSERT  : 45,
+        KEY_0       : 48,
+        KEY_1       : 49,
+        KEY_2       : 50,
+        KEY_3       : 51,
+        KEY_4       : 52,
+        KEY_5       : 53,
+        KEY_6       : 54,
+        KEY_7       : 55,
+        KEY_8       : 56,
+        KEY_9       : 57,
+        KEY_WINDOWS : 91,
+        KEY_COMMA   : 188,
+        KEY_SEMICOLON: 186,
+        KEY_QUOTATION: 222,
+        KEY_SIGN    : 49,
+        stop : function(evt){
+            if(evt.stopPropagation){
+                evt.stopPropagation();
+                evt.preventDefault();
+            }else{
+                evt.cancelBubble = true;
+                evt.returnValue = false;
+            }
+        },
+        pause : function(evt){
+            if(evt.stopPropagation){
+                evt.stopPropagation();
+                //evt.preventDefault();
+            }else{
+                evt.cancelBubble = true;
+                //evt.returnValue = false;
+            }
+        },
+        // for keypress handler.
+        key : function(evt){
+            evt = window.event || evt;
+            var keycode = evt.keyCode || evt.which || evt.charCode;
+            var keyname = String.fromCharCode(keycode);
+            if(E.KEY_SHIFT==keycode || E.KEY_CTRL==keycode){
+                return;
+            }
+            if((evt.shiftKey && E.CapsLock(evt)) || (!evt.shiftKey &&!E.CapsLock(evt))){
+                keyname = keyname.toLowerCase();
+            }
+            return keyname;
+        },
+        // for keypress handler.
+        CapsLock : function(evt){
+            var e = evt||window.event;
+            var o = e.target||e.srcElement;
+            var oTip = o.nextSibling;
+            var keyCode  =  e.keyCode||e.which;
+            var isShift  =  e.shiftKey ||(keyCode  ==   16 ) || false ;
+            // 判断shift键是否按住
+            if (
+                ((keyCode >=   65   &&  keyCode  <=   90 )  &&   !isShift)
+                // Caps Lock 打开，且没有按住shift键
+                || ((keyCode >=   97   &&  keyCode  <=   122 )  &&  isShift)
+                // Caps Lock 打开，且按住shift键
+            ){return true;}
+            else{return false;}
+        },
+        add : function(elem, evt, handler){
+            if (elem.addEventListener) {
+                elem.addEventListener(evt, handler, false);
+            } else if(elem.attachEvent) {
+                elem.attachEvent("on"+evt, handler);
+            }
+        },
+        remove : function(elem, evt, handler){
+            if (elem.removeEventListener) {
+                elem.removeEventListener(evt, handler, false);
+            } else {
+                elem.detachEvent("on"+evt, handler);
             }
         }
-        return r;
-    }
+    };
+    var F = {
+        createDelegate : function(instance, method) {
+            //var args = Array.from(arguments).splice(2,arguments.length - 2);
+            return function() {
+                return method.apply(instance, arguments);
+            }
+        }
+    };
 
     var Slide = function(c){
         this.container = c||document;
@@ -76,8 +177,8 @@ var Vimlide = (function(){
         //}else{
             //this.page = 1;
         //}
-        this.slidesBox = childNodes(this.container)[0];
-        this.slides = childNodes(this.slidesBox)
+        this.slidesBox = D.children(this.container)[0];
+        this.slides = D.children(this.slidesBox)
         this._maxpage = this.slides.length;
         if(this.page>this._maxpage){this.page=this._maxpage;}
         this.init();
@@ -93,79 +194,67 @@ var Vimlide = (function(){
         this.count = "";
         this.mode = "normal";
 
-        this.nmap("<Esc>", Function.createDelegate(this, this.reset));
+        this.nmap("<Esc>", F.createDelegate(this, this.reset));
 
-        this.nmap("j", Function.createDelegate(this, this.nextItem));
-        this.nmap("<Down>", Function.createDelegate(this, this.nextItem));
+        this.nmap("j", F.createDelegate(this, this.nextItem));
+        this.nmap("<Down>", F.createDelegate(this, this.nextItem));
 
-        this.nmap("J", Function.createDelegate(this, this.nextSlide));
-        this.nmap("<Right>", Function.createDelegate(this, this.nextSlide));
-        this.nmap("<PageDown>", Function.createDelegate(this, this.nextSlide));
+        this.nmap("J", F.createDelegate(this, this.nextSlide));
+        this.nmap("<Right>", F.createDelegate(this, this.nextSlide));
+        this.nmap("<PageDown>", F.createDelegate(this, this.nextSlide));
 
-        this.nmap("k", Function.createDelegate(this, this.prevItem));
-        this.nmap("<Up>", Function.createDelegate(this, this.prevItem));
+        this.nmap("k", F.createDelegate(this, this.prevItem));
+        this.nmap("<Up>", F.createDelegate(this, this.prevItem));
 
-        this.nmap("K", Function.createDelegate(this, this.prevSlide));
-        this.nmap("<Left>", Function.createDelegate(this, this.prevSlide));
-        this.nmap("<PageUp>", Function.createDelegate(this, this.prevSlide));
+        this.nmap("K", F.createDelegate(this, this.prevSlide));
+        this.nmap("<Left>", F.createDelegate(this, this.prevSlide));
+        this.nmap("<PageUp>", F.createDelegate(this, this.prevSlide));
 
-        this.nmap("gg", Function.createDelegate(this, this.gg));
-        this.nmap("G", Function.createDelegate(this, this.G));
+        this.nmap("gg", F.createDelegate(this, this.gg));
+        this.nmap("G", F.createDelegate(this, this.G));
 
-        this.nmap("/", Function.createDelegate(this, this.searchModeOn));
-        this.nmap("n", Function.createDelegate(this, this.searchNext));
-        this.nmap("N", Function.createDelegate(this, this.searchPrev));
-        this.smap("<Esc>", Function.createDelegate(this, this.searchModeOff));
-        this.smap("<BS>", Function.createDelegate(this, this.searchModeBackspace));
-        this.smap("<CR>", Function.createDelegate(this, this.searchDo));
+        this.nmap("/", F.createDelegate(this, this.searchModeOn));
+        this.nmap("n", F.createDelegate(this, this.searchNext));
+        this.nmap("N", F.createDelegate(this, this.searchPrev));
+        this.smap("<Esc>", F.createDelegate(this, this.searchModeOff));
+        this.smap("<BS>", F.createDelegate(this, this.searchModeBackspace));
+        this.smap("<CR>", F.createDelegate(this, this.searchDo));
 
-        this.nmap(":", Function.createDelegate(this, this.commandModeOn));
-        this.cmap("<Esc>", Function.createDelegate(this, this.commandModeOff));
-        this.cmap("<BS>", Function.createDelegate(this, this.commandBackspace));
-        this.cmap("<CR>", Function.createDelegate(this, this.commandDo));
+        this.nmap(":", F.createDelegate(this, this.commandModeOn));
+        this.cmap("<Esc>", F.createDelegate(this, this.commandModeOff));
+        this.cmap("<BS>", F.createDelegate(this, this.commandBackspace));
+        this.cmap("<CR>", F.createDelegate(this, this.commandDo));
 
-        this.nmap("<", Function.createDelegate(this, this.hideOutline));
-        this.nmap(">", Function.createDelegate(this, this.showOutline));
+        this.nmap("<", F.createDelegate(this, this.hideOutline));
+        this.nmap(">", F.createDelegate(this, this.showOutline));
 
-        this.nmap("-", Function.createDelegate(this, this.fontSizeMinus));
-        this.nmap("_", Function.createDelegate(this, this.fontSizeMinus));
-        this.nmap("+", Function.createDelegate(this, this.fontSizePlus));
-        this.nmap("=", Function.createDelegate(this, this.fontSizePlus));
-        this.nmap("0", Function.createDelegate(this, this.fontSizeRevert));
+        this.nmap("-", F.createDelegate(this, this.fontSizeMinus));
+        this.nmap("_", F.createDelegate(this, this.fontSizeMinus));
+        this.nmap("+", F.createDelegate(this, this.fontSizePlus));
+        this.nmap("=", F.createDelegate(this, this.fontSizePlus));
+        this.nmap("0", F.createDelegate(this, this.fontSizeRevert));
 
-        this.nmap("?", Function.createDelegate(this, this.showHelp));
-
-        // make outline.
-        var docHi = $(document.body).height();
-        for(var i=0,l=this.slides.length; i<l; i++){
-            $(this.slides[i]).css({"height":docHi+"px"});
-            var x=i+1;
-            var t=$(this.slides[i]).find("header:eq(0)").text()||"Unamed Page "+x;
-            $(this.outlineBd).append('<li id="idx-'+x+'"><a href="#'+x+'">'+t+'</a></li>');
-        }
+        this.nmap("?", F.createDelegate(this, this.showHelp));
 
         this.fixSize();
-        $(window).resize(this.fixSize);
-        // TODO: for class.
-        $("#outline-bd>li").click(function(){
-            this.go2($(this).attr("id").replace("idx-", ""));
-        });
+        $(window).resize(F.createDelegate(this, this.fixSize));
         this.go2(this.page);
 
         this.container.focus();
-        window.onhashchange = Function.createDelegate(this, this.hashChanged);
+        window.onhashchange = F.createDelegate(this, this.hashChanged);
     };
     Slide.prototype.hashChanged = function(){
         this.go2(parseInt(location.hash.replace("#","")));
     };
     // TODO: for class.
     Slide.prototype.fixSize = function(){
-        var docHi = $(document.body).height();
-        $('#content>div.slide').css({"height":docHi+"px"});
-        $('#outline-box').height(docHi-$('#outline>h4').outerHeight());
+        //var docHi = $(document.body).height();
+        var docHi = $(this.container).height();
+        //$('>div.slide', this.slidesBox).css({"height":docHi+"px"});
+        $(this.outlineBd).height(docHi-$('>h4', this.outliner).outerHeight());
         this.go2(this.page||1, 1);
     }
-    // TODO:
+    // TODO: for class.
     Slide.prototype.fontSize = function(offset){
         var o=$("div.slides>div.slide");
         o.css("font-size", parseInt(o.css("font-size"))+offset)
@@ -191,6 +280,21 @@ var Vimlide = (function(){
         this.outliner.appendChild(this.outlineBox);
         this.outlineBox.appendChild(this.outlineBd);
 
+        // make outline.
+        //var docHi = $(document.body).height();
+        var docHi = $(this.container).height();
+        for(var i=0,x,l=this.slides.length; i<l; i++){
+            //this.slides[i].style.height = docHi+"px";
+            //$(this.slides[i]).css({"height":docHi+"px"});
+            x=i+1;
+            var t=$(this.slides[i]).find("header:eq(0)").text()||"Unamed Page "+x;
+            $(this.outlineBd).append('<li id="idx-'+x+'"><a href="#'+x+'">'+t+'</a></li>');
+        }
+        // TODO: for class.
+        $("#outline-bd>li").click(function(){
+            this.go2($(this).attr("id").replace("idx-", ""));
+        });
+
         this.toolbar = document.createElement("div");
         this.toolbar.className = "vimlide-toolbar";
 
@@ -201,8 +305,8 @@ var Vimlide = (function(){
         this.searchBox.className = "status-bar";
         this.searchInput = document.createElement("input");
         this.searchInput.setAttribute("type", "text");
-        Event.add(this.searchInput, "keypress", Function.createDelegate(this, this.searchHandler));
-        Event.add(this.searchInput, "blur", Function.createDelegate(this, this.searchModeOff));
+        E.add(this.searchInput, "keypress", F.createDelegate(this, this.searchHandler));
+        E.add(this.searchInput, "blur", F.createDelegate(this, this.searchModeOff));
         this.searchBox.appendChild(document.createTextNode("/"));
         this.searchBox.appendChild(this.searchInput);
 
@@ -210,8 +314,8 @@ var Vimlide = (function(){
         this.commandBox.className = "status-bar";
         this.commandInput = document.createElement("input");
         this.commandInput.setAttribute("type", "text");
-        Event.add(this.commandInput, "keypress", Function.createDelegate(this, this.commandHandler));
-        Event.add(this.commandInput, "blur", Function.createDelegate(this, this.commandModeOff));
+        E.add(this.commandInput, "keypress", F.createDelegate(this, this.commandHandler));
+        E.add(this.commandInput, "blur", F.createDelegate(this, this.commandModeOff));
         this.commandBox.appendChild(document.createTextNode(":"))
         this.commandBox.appendChild(this.commandInput);
 
@@ -268,69 +372,69 @@ var Vimlide = (function(){
         b.setAttribute("tabindex", "1");
         //jQuery.
         this.DEFAULT_FONTSIZE = this.FONTSIZE = $(b).css("font-size");
-        addClass(b, "presentation");
+        if(!D.hasClass("presentation")){D.addClass(b, "presentation");}
 
-        Event.add(this.container, "keypress", Function.createDelegate(this, this.normalHandler));
+        E.add(this.container, "keypress", F.createDelegate(this, this.normalHandler));
     };
     Slide.prototype.normalHandler = function(evt){
         evt = evt || window.event;
         var keycode = evt.keyCode || evt.which;
         var keyname;
         switch(keycode){
-        case Event.KEY_ESC:
+        case E.KEY_ESC:
             keyname = "<Esc>";
             this.key_history += keyname;
             break;
-        case Event.KEY_BACKSPACE:
+        case E.KEY_BACKSPACE:
             keyname = "<BS>";
             this.key_history += keyname;
             break;
-        case Event.KEY_TAB:
+        case E.KEY_TAB:
             keyname = "<Tab>";
             this.key_history += keyname;
             break;
-        case Event.KEY_RETURN:
+        case E.KEY_RETURN:
             keyname = "<CR>";
             this.key_history += keyname;
             break;
-        case Event.KEY_SHIFT:
-        case Event.KEY_CTRL:
+        case E.KEY_SHIFT:
+        case E.KEY_CTRL:
             return;
-        case Event.KEY_CAPSLOCK:
+        case E.KEY_CAPSLOCK:
             keyname = "<CapsLock>";
             this.key_history += keyname;
             break;
-        case Event.KEY_LEFT:
+        case E.KEY_LEFT:
             keyname = "<Left>";
             this.key_history += keyname;
             break;
-        case Event.KEY_UP:
+        case E.KEY_UP:
             keyname = "<Up>";
             this.key_history += keyname;
             break;
-        case Event.KEY_RIGHT:
+        case E.KEY_RIGHT:
             keyname = "<Right>";
             this.key_history += keyname;
             break;
-        case Event.KEY_DOWN:
+        case E.KEY_DOWN:
             keyname = "<Down>";
             this.key_history += keyname;
             break;
-        case 48: // KEY_0
+        case E.KEY_0:
             // "0" 开始的量词是没有意义的，可以直接当作命令。
             // 所以这里排除了这种情况。
             if(this.count){this.count+="0"; this.countBox.innerHTML=this.count;}
             else{keyname="0"; this.key_history+="0";}
             break;
-        case 49: // KEY_1
-        case 50: // KEY_2
-        case 51: // KEY_3
-        case 52: // KEY_4
-        case 53: // KEY_5
-        case 54: // KEY_6
-        case 55: // KEY_7
-        case 56: // KEY_8
-        case 57: // KEY_9
+        case E.KEY_1:
+        case E.KEY_2:
+        case E.KEY_3:
+        case E.KEY_4:
+        case E.KEY_5:
+        case E.KEY_6:
+        case E.KEY_7:
+        case E.KEY_8:
+        case E.KEY_9:
             this.count += String.fromCharCode(keycode);
             this.countBox.innerHTML = this.count;
             break;
@@ -347,7 +451,7 @@ var Vimlide = (function(){
             this.key_history = "";
             this.count = "";
             this.countBox.innerHTML = "";
-            Event.stop(evt);
+            E.stop(evt);
             return false;
         }
         if(this.NORMAL_HANDLER[this.key_history] &&
@@ -356,7 +460,7 @@ var Vimlide = (function(){
             this.key_history = "";
             this.count = "";
             this.countBox.innerHTML = "";
-            Event.stop(evt);
+            E.stop(evt);
             return false;
         }
     };
@@ -365,20 +469,20 @@ var Vimlide = (function(){
         var keycode = evt.keyCode || evt.which;
         var keyname;
         switch(keycode){
-        case Event.KEY_ESC:
+        case E.KEY_ESC:
             keyname = "<Esc>";
             break;
-        case Event.KEY_BACKSPACE:
+        case E.KEY_BACKSPACE:
             keyname = "<BS>";
             break;
-        case Event.KEY_RETURN:
+        case E.KEY_RETURN:
             keyname = "<CR>";
             break;
         default:
             keyname = String.fromCharCode(keycode);
             break;
         }
-        Event.pause(evt);
+        E.pause(evt);
         if(!keyname){return true;}
         if(this.COMMAND_HANDLER[keyname] &&
            this.COMMAND_HANDLER[keyname] instanceof Function){
@@ -398,20 +502,20 @@ var Vimlide = (function(){
         var keycode = evt.keyCode || evt.which;
         var keyname;
         switch(keycode){
-        case Event.KEY_ESC:
+        case E.KEY_ESC:
             keyname = "<Esc>";
             break;
-        case Event.KEY_BACKSPACE:
+        case E.KEY_BACKSPACE:
             keyname = "<BS>";
             break;
-        case Event.KEY_RETURN:
+        case E.KEY_RETURN:
             keyname = "<CR>";
             break;
         default:
             keyname = String.fromCharCode(keycode);
             break;
         }
-        Event.pause(evt);
+        E.pause(evt);
         if(!keyname){return true;}
         if(this.SEARCH_HANDLER[keyname] &&
            this.SEARCH_HANDLER[keyname] instanceof Function){
@@ -453,7 +557,7 @@ var Vimlide = (function(){
         this.mode = "normal";
     };
     Slide.prototype.toggleOutline = function(b){
-        var o=$(this.outliner), c=$(this.slides),x=$(this.outlineBar);
+        var o=$(this.outliner), c=$(this.slidesBox),x=$(this.outlineBar);
         b = b==undefined?(parseInt(o.css("left"))!=0):b;
         if(b){
             o.css({"left":"0"});
@@ -502,6 +606,7 @@ var Vimlide = (function(){
         this.searchInput.focus();
     };
     Slide.prototype.searchModeOff = function(){
+        this.searchInput.value = "";
         this.container.focus();
         this.searchBox.style.display = "none";
         this.toolbar.style.display = "block";
@@ -590,6 +695,7 @@ var Vimlide = (function(){
         this.commandInput.focus();
     };
     Slide.prototype.commandModeOff = function(){
+        this.commandInput.value = "";
         this.container.focus();
         this.commandBox.style.display = "none";
         this.toolbar.style.display = "block";
@@ -615,10 +721,10 @@ var Vimlide = (function(){
         var s;
         if(0==offset){s=this.DEFAULT_FONTSIZE;}
         else{s=this.FONTSIZE+offset;}
-        this.container.css("font-size", s);
+        $(this.container).css("font-size", s);
     };
     Slide.prototype.fullScreen = function(){
-        alert("full screen.")
+        alert("full screen.");
     };
     Slide.prototype.go = function(offset){
         this.go2(this.page+parseInt(offset));

@@ -4,27 +4,6 @@
  * @author 闲耘™(hotoo, hotoo.cn[AT]gmail.com)
  * @version 1.0, 2010/09
  */
-// {{{
-var Queue = function(){
-    this._list = [];
-    for(var i=0,l=arguments.length; i<l; i++){
-        this._list.push(arguments[i]);
-    }
-};
-Queue.prototype.push = function(item){
-    return this._list.push(item);
-};
-Queue.prototype.pop = function(){
-    return this._list.pop();
-};
-Queue.prototype.clear = function(){
-	//this._list.length = 0;
-	return this._list.splice(0, this._list.length);
-};
-Queue.prototype.peek = function(){
-    return this._list.length ? this._list[this._list.length-1] : null;
-};
-// }}}
 
 
 var Vimlide = (function(){
@@ -167,6 +146,53 @@ var Vimlide = (function(){
             }
         }
     };
+    // {{{
+    // Queue List.
+    var Q = function(){
+        this._list = [];
+        for(var i=0,l=arguments.length; i<l; i++){
+            this._list.push(arguments[i]);
+        }
+    };
+    Q.prototype = {
+        push : function(item){
+			var i=this.indexOf(item);
+            if(i>=0){
+				this._list.splice(i,1).push(item);
+            }
+            return this._list.push(item);
+        },
+        pop : function(){
+            return this._list.pop();
+        },
+        length : function(){
+            return this._list.length;
+        },
+        exist : function(item){
+            return ("\r"+this._list.join("\r")+"\r").indexOf("\r"+item+"\r");
+        },
+        indexOf : function(item){
+            var s="\r"+this._list.join("\r")+"\r";
+            var i=s.indexOf("\r"+item+"\r");
+            return i==-1?-1:s.substr(0, i-1).split("\r").length-1;
+        },
+        clear : function(){
+            //this._list.length = 0;
+            return this._list.splice(0, this._list.length);
+        },
+        peek : function(){
+            return this._list.length ? this._list[this._list.length-1] : null;
+        },
+        get : function(idx){
+            var len=this._list.length;
+            if(idx<0 || idx>=len){throw new RangeError("Out of range: "+idx+" out of [0,"+len+")");}
+            return this._list[len-1-idx];
+        },
+		toString : function(){
+			return this._list.join(",");
+		}
+    };
+    // }}}
 
     var Slide = function(c){
         this.container = c||document;
@@ -185,10 +211,16 @@ var Vimlide = (function(){
         this.NORMAL_HANDLER={};
         this.COMMAND_HANDLER={};
         this.SEARCH_HANDLER={};
+        this.HELP_HANDLER={};
 
         this.SEARCHRESULTS = [];
         this.SEARCH_HISTORY=[];
         this.SEARCH_HISTORY_CACHE={};
+
+        this._search_history_list = new Q();
+        this._search_history_idx = -1;
+        this._command_history_list = new Q();
+        this._command_history_idx = -1;
 
         this.key_history="";
         this.count = "";
@@ -219,6 +251,8 @@ var Vimlide = (function(){
         this.smap("<Esc>", F.createDelegate(this, this.searchModeOff));
         this.smap("<BS>", F.createDelegate(this, this.searchModeBackspace));
         this.smap("<CR>", F.createDelegate(this, this.searchDo));
+        this.smap("<Up>", F.createDelegate(this, this.searchHistoryPrev));
+        this.smap("<Down>", F.createDelegate(this, this.searchHistoryNext));
 
         this.nmap(":", F.createDelegate(this, this.commandModeOn));
         this.cmap("<Esc>", F.createDelegate(this, this.commandModeOff));
@@ -234,7 +268,8 @@ var Vimlide = (function(){
         this.nmap("=", F.createDelegate(this, this.fontSizePlus));
         this.nmap("0", F.createDelegate(this, this.fontSizeRevert));
 
-        this.nmap("?", F.createDelegate(this, this.showHelp));
+        this.nmap("?", F.createDelegate(this, this.helpModeOn));
+        this.hmap("<Esc>", F.createDelegate(this, this.helpModeOff));
 
         this.fixSize();
         $(window).resize(F.createDelegate(this, this.fixSize));
@@ -333,9 +368,11 @@ var Vimlide = (function(){
         this.prevBar = document.createElement("a");
         this.prevBar.innerHTML = "&laquo; Backword";
         //this.prevBar.appendChild(document.createTextNode("&laquo; Backword"));
+        E.add(this.prevBar, "click", F.createDelegate(this, this.prevItem));
         this.nextBar = document.createElement("a");
         this.nextBar.innerHTML = "Foreword &raquo;";
         //this.nextBar.appendChild(document.createTextNode("Foreword &raquo;"));
+        E.add(this.nextBar, "click", F.createDelegate(this, this.nextItem));
         this.playBar = document.createElement("a");
         this.playBar.innerHTML = "Play &rsaquo;";
         //this.nextBar.appendChild(document.createTextNode("Play &rsaquo;"));
@@ -358,7 +395,11 @@ var Vimlide = (function(){
 
         this.helper = document.createElement("div");
         this.helper.className = "vimlide-help";
+        //this.helper.setAttribute("tabIndex","100");
+        this.helper.tabIndex = "100";
         this.helper.innerHTML = S_HELP;
+        E.add(this.helper, "keypress", F.createDelegate(this, this.helpHandler));
+        E.add(this.helper, "blur", F.createDelegate(this, this.helpModeOff));
 
         var b=this.container;
         if(document==this.container){
@@ -508,6 +549,12 @@ var Vimlide = (function(){
         case E.KEY_BACKSPACE:
             keyname = "<BS>";
             break;
+        case E.KEY_UP:
+            keyname = "<Up>";
+            break;
+        case E.KEY_DOWN:
+            keyname = "<Down>";
+            break;
         case E.KEY_RETURN:
             keyname = "<CR>";
             break;
@@ -530,26 +577,66 @@ var Vimlide = (function(){
 
         return true;
     };
+    Slide.prototype.helpHandler = function(evt){
+        evt = window.event || evt;
+        var keycode = evt.keyCode || evt.which;
+        var keyname;
+        switch(keycode){
+        case E.KEY_ESC:
+            keyname = "<Esc>";
+            break;
+        case E.KEY_BACKSPACE:
+            keyname = "<BS>";
+            break;
+        case E.KEY_RETURN:
+            keyname = "<CR>";
+            break;
+        default:
+            keyname = String.fromCharCode(keycode);
+            break;
+        }
+        E.pause(evt);
+        if(!keyname){return true;}
+        if(this.HELP_HANDLER[keyname] &&
+           this.HELP_HANDLER[keyname] instanceof Function){
+            this.HELP_HANDLER[keyname].call(this, evt);
+            return true;
+        }
+        if(this.HELP_HANDLER[this.key_history] &&
+           this.HELP_HANDLER[this.key_history] instanceof Function){
+            this.HELP_HANDLER[this.key_history].call(this, evt);
+            return true;
+        }
+
+        return true;
+    };
     Slide.prototype.nmap = function(keys, callback){
         if(!(callback instanceof Function)){return;}
         this.NORMAL_HANDLER[keys] = callback;
     };
-    Slide.prototype.unmap = function(keys){
+    Slide.prototype.nunmap = function(keys){
         this.NORMAL_HANDLER[keys] = null;
     };
     Slide.prototype.cmap = function(keys, callback){
         if(!(callback instanceof Function)){return;}
         this.COMMAND_HANDLER[keys] = callback;
     };
-    Slide.prototype.ucmap = function(keys){
+    Slide.prototype.cunmap = function(keys){
         this.COMMAND_HANDLER[keys] = null;
     };
     Slide.prototype.smap = function(keys, callback){
         if(!(callback instanceof Function)){return;}
         this.SEARCH_HANDLER[keys] = callback;
     };
-    Slide.prototype.usmap = function(keys){
+    Slide.prototype.sunmap = function(keys){
         this.SEARCH_HANDLER[keys] = null;
+    };
+    Slide.prototype.hmap = function(keys, callback){
+        if(!(callback instanceof Function)){return;}
+        this.HELP_HANDLER[keys] = callback;
+    };
+    Slide.prototype.hunmap = function(keys){
+        this.HELP_HANDLER[keys] = null;
     };
     Slide.prototype.reset = function(){
         this.count = "";
@@ -606,6 +693,7 @@ var Vimlide = (function(){
         this.searchInput.focus();
     };
     Slide.prototype.searchModeOff = function(){
+        this._search_history_idx = -1;
         this.searchInput.value = "";
         this.container.focus();
         this.searchBox.style.display = "none";
@@ -618,6 +706,7 @@ var Vimlide = (function(){
     };
     Slide.prototype.searchDo = function(){
         var key = this.searchInput.value;
+        this._search_history_list.push(key);
         this.SEARCH_RESULTS = this.doSearch(key);
         this.searchModeOff();
         if(this.SEARCH_RESULTS.length==0){return;}
@@ -628,6 +717,20 @@ var Vimlide = (function(){
             }
         }
         this.go2(this.SEARCH_RESULTS[0]);
+    };
+    Slide.prototype.searchHistoryPrev = function(){
+        var l=this._search_history_list.length(),
+            i=this._search_history_idx+1;
+        if(l<=0 || i<0 || i>=l){return;}
+        this.searchInput.value = this._search_history_list.get(i);
+        this._search_history_idx = i;
+    };
+    Slide.prototype.searchHistoryNext = function(){
+        var l=this._search_history_list.length(),
+            i=this._search_history_idx-1;
+        if(l<=0 || i<0 || i>=l){return;}
+        this.searchInput.value = this._search_history_list.get(i);
+        this._search_history_idx = i;
     };
     // TODO: do search process for class.
     Slide.prototype.doSearch = function(key){
@@ -753,12 +856,14 @@ var Vimlide = (function(){
         this.currPageInput.value = this.page;
         window.location.hash = "#"+this.page;
     }
-    Slide.prototype.showHelp = function(){
+    Slide.prototype.helpModeOn = function(){
         this.helper.style.display = "block";
+        this.helper.focus();
         this.mode = "help";
     };
-    Slide.prototype.hideHelp = function(){
+    Slide.prototype.helpModeOff = function(){
         this.helper.style.display = "none";
+        this.container.focus();
         this.mode = "normal";
     };
 

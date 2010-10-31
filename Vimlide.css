@@ -35,15 +35,18 @@ html,body{margin:0; padding:0; overflow:hidden; width:100%; height:100%;
             font:1em/1 Helvetica,Tahoma,Arial,\5b8b\4f53,sans-serif; font-weight:bold;
             -moz-border-radius:4px; -khtml-border-radius:4px; -webkit-border-radius:4px; border-radius:4px;
         }
-        .status-bar{border:1px solid #999; display:none; overflow:hidden;
-            padding-left:4px; width:98%; *width:250px;
+        .status-bar{border:1px solid #FAD163; display:none; overflow:hidden;
+            font:2em/1 Helvetica,Tahoma,Arial,\5b8b\4f53,sans-serif;
+            padding-left:4px; width:98%; *width:10em;
+            background:#FFF7D7 none;
             -moz-border-radius:4px; -khtml-border-radius:4px; -webkit-border-radius:4px; border-radius:4px;
         }
         .status-bar:hover{border-color:#ccc;}
             .status-bar input{
-                font:.9em/1 Helvetica,Tahoma,Arial,\5b8b\4f53,sans-serif;
-                display:inline-block; width:92%; *width:230px;
-                outline:none; border:1px solid #fff; line-height:1.2em; margin:0; padding:2px 3px;
+                font:1em/1 Helvetica,Tahoma,Arial,\5b8b\4f53,sans-serif;
+                display:inline-block; width:92%; *width:8em;
+                background:#FFF7D7 none;
+                outline:none; border:0px solid #FFF7D7; line-height:1.2em; margin:0; padding:2px 3px;
             }
         .vimlide-pagebox:hover,.vimlide-pagebox:focus{border-color:#666; background:#999 none; color:#fff;}
         .vimlide-toolbar a{color:#999; padding:5px; display:inline-block; text-decoration:none; cursor:pointer;}
@@ -81,7 +84,7 @@ cite.slide-search{background:#ff0 none; font-style:normal; font-weight:bold;}
 
 
 
-#content header{
+.slide header{
     /*position: absolute;*/
     left: 30px;
     top: 25px;
@@ -91,7 +94,7 @@ cite.slide-search{background:#ff0 none; font-style:normal; font-weight:bold;}
     letter-spacing: -.05em;
     text-shadow: rgba(0,0,0,0.2) 0 2px 5px;
 }
-#content section{
+.slide section{
     margin-left: 30px;
     margin-right: 30px;
     /*margin-top: 100px;*/
@@ -102,73 +105,73 @@ cite.slide-search{background:#ff0 none; font-style:normal; font-weight:bold;}
     text-shadow: rgba(0,0,0,0.2) 0 2px 5px;
     line-height: 1.5;
 }
-#content p{
+.slide p{
     font-size: 25px;
     margin: 10px 0;
 }
-#content h1{
+.slide h1{
     padding: 0;
     margin: 0;
     letter-spacing: -2px;
     font-size: 60px;
 }
-#content h2{
+.slide h2{
     padding: 0;
     margin: 15px 0 5px 0;
     font-size: 50px;
     font-weight: normal;
 }
-#content a{
+.slide a{
     text-decoration: none;
     line-height: 110%;
 }
-#content button{
+.slide button{
     font-size: 20px;
 }
-#content blockquote,ul,ol,dl{
+.slide blockquote,ul,ol,dl{
     margin: 1em;
 }
-#content ul,#content ol,#content dl{
+.slide ul,.slide ol,.slide dl{
     margin-left: 2em;
     font-size: 40px;
 }
-#content li{
+.slide li{
     list-style: none;
 }
-#content .small li{
+.slide .small li{
     font-size: 25px;
 }
-#content ul li:before{
+.slide ul li:before{
     content: '· ';
 }
-#content dl dd{
+.slide dl dd{
     margin-left: 1em;
 }
-#content th,#content td{
+.slide th,.slide td{
     padding: .5em;
 }
-#content caption{
+.slide caption{
     margin-bottom: .5em;
 }
-#content hr{
+.slide hr{
     visibility: hidden;
     padding: 0;
     margin: 0 0 -20px 0;
 }
-#content section.intro h1{
+.slide section.intro h1{
     /*margin-top: 80px;*/
 }
-#content section.intro p{
+.slide section.intro p{
     font-size: 35px;
 }
-#content section.intro .author{
+.slide section.intro .author{
     /*margin-top: 120px;*/
     margin-bottom: -40px;
 }
-#content .notes{
+.slide .notes{
     display: none;
 }
-#content section.center{
+.slide section.center{
     line-height: 180%;
     text-align: center;
     display: table-cell;
@@ -176,7 +179,7 @@ cite.slide-search{background:#ff0 none; font-style:normal; font-weight:bold;}
     /*height: 700px;*/
     /*width: 900px;*/
 }
-#content blockquote{
+.slide blockquote{
     font-size: 20px;
     white-space: pre;
     padding: 10px 20px;
@@ -185,7 +188,7 @@ cite.slide-search{background:#ff0 none; font-style:normal; font-weight:bold;}
     border: 1px solid rgba(0,0,255,0.2);
     text-shadow: none;
 }
-#content pre,.pre{
+.slide pre,.pre{
     display: block;
     white-space: pre;
     text-align: left;
@@ -197,18 +200,18 @@ cite.slide-search{background:#ff0 none; font-style:normal; font-weight:bold;}
     border: 1px solid rgba(255,0,0,0.2);
     text-shadow: none;
 }
-#content pre b{
+.slide pre b{
     font-weight: normal;
     color: #c61800;
     text-shadow: #c61800 0 0 1px;
 }
-#content pre em{
+.slide pre em{
     font-weight: normal;
     font-style: normal;
     color: #18a600;
     text-shadow: #18a600 0 0 1px;
 }
-#content .css,#content .js,#content .html{
+.slide .css,.slide .js,.slide .html{
     color: black;
     display: inline-block;
     padding: 6px 10px 3px 10px;
@@ -226,17 +229,17 @@ cite.slide-search{background:#ff0 none; font-style:normal; font-weight:bold;}
     -webkit-box-shadow: rgba(0,0,0,0.1) 0 2px 5px;
     -moz-box-shadow: rgba(0,0,0,0.1) 0 2px 5px;
 }
-#content .css{
+.slide .css{
     background: -webkit-gradient(linear,left top,left bottom,from(#ff4),to(#ffa));
     background: -moz-linear-gradient(left top,#ff4,#ffa);
     background-color: #ff4;
 }
-#content .js{
+.slide .js{
     background: -webkit-gradient(linear,left top,left bottom,from(#4f4),to(#afa));
     background: -moz-linear-gradient(left top,#4f4,#afa);
     background: #4f4;
 }
-#content .html{
+.slide .html{
     background: -webkit-gradient(linear,left top,left bottom,from(#e88),to(#fee));
     background: -moz-linear-gradient(left top,#e88,#fee);
     background: #e88;
